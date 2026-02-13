@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="animate-fade-in">
       {/* Hero-блок на всю ширину с самого верха */}
-      <div className="relative w-full overflow-hidden min-h-[30vh] sm:min-h-[40vh] lg:min-h-[60vh]">
+      <div className="relative w-full overflow-hidden min-h-[30vh] sm:min-h-[40vh] lg:min-h-[60vh] pt-14 sm:pt-14">
         {/* Фоновое изображение */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -20,7 +20,7 @@ export default function Home() {
         </div>
 
         {/* Контент hero-блока */}
-        <div className="relative mx-auto flex min-h-[30vh] sm:min-h-[50vh] lg:min-h-[60vh] max-w-7xl flex-col items-center justify-center px-4 pt-8 pb-0 sm:py-3 lg:py-5 -mb-2">
+        <div className="relative mx-auto flex min-h-[30vh] sm:min-h-[50vh] lg:min-h-[60vh] max-w-7xl flex-col items-center justify-center px-4 pt-6 pb-0 sm:py-3 lg:py-5 -mb-2">
           {/* Бейдж - Geist Sans */}
           <div className="animate-slide-down-fast mb-1 sm:mb-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 sm:px-3 sm:py-1 text-[7px] sm:text-xs font-medium text-pink-700 shadow-lg backdrop-blur-md">
             <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
