@@ -1,0 +1,273 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+html.light-mode {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ===== ПОДКЛЮЧЕННЫЕ ШРИФТЫ ===== */
+
+/* Soledago - ТОЛЬКО ДЛЯ ЗАГОЛОВКОВ */
+.font-soledago {
+  font-family: var(--font-soledago), serif !important;
+  letter-spacing: 0.02em;
+}
+
+/* Geist Sans - для всего текста (уже стоит глобально) */
+body, p, span, a, li, button, div {
+  font-family: var(--font-geist-sans), sans-serif !important;
+}
+
+/* Заголовки - Soledago */
+h1 {
+  font-family: var(--font-soledago), serif !important;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+}
+
+/* Все остальные заголовки - Geist Sans */
+h2, h3, h4, h5, h6, .font-primary {
+  font-family: var(--font-geist-sans), sans-serif !important;
+  letter-spacing: normal;
+  font-weight: 600;
+}
+
+/* ===== АНИМАЦИИ ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes subtleZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+/* Карточки с универсальной анимацией - выплывание снизу */
+.animate-card {
+  animation: slideUpCard 0.7s cubic-bezier(0.15, 0.75, 0.25, 1) forwards;
+  opacity: 0;
+  transform: translateY(40px);
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  opacity: 0;
+  transform: translateY(40px);
+}
+/* ===== АНИМАЦИИ ДЛЯ ВИШЛИСТА ===== */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ===== АНИМАЦИИ ВЫПЛЫВАНИЯ ===== */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.animate-slide-up {
+  animation: slideUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+/* Анимация для карточек подарков */
+.animate-card {
+  animation: slideUp 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* Заголовок на главной - еще медленнее */
+.animate-slide-up-slow {
+  animation: slideUp 1.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  opacity: 0;
+  transform: translateY(50px);
+}
+@keyframes slideUpCard {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes floatSlower {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-up-slow {
+  animation: slideUp 1.4s cubic-bezier(0.15, 0.75, 0.25, 1) forwards;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.animate-slide-up-medium {
+  animation: slideUp 0.9s cubic-bezier(0.2, 0.8, 0.4, 1) 0.2s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.animate-slide-up-medium-delay {
+  animation: slideUp 0.9s cubic-bezier(0.2, 0.8, 0.4, 1) 0.4s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.animate-slide-down-fast {
+  animation: slideDown 0.5s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.animate-subtle-zoom {
+  animation: subtleZoom 8s ease-in-out forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+}
+
+.animate-float-slower {
+  animation: floatSlower 8s ease-in-out infinite;
+}
+
+.animate-card-1 {
+  animation: cardAppear 0.6s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.animate-card-2 {
+  animation: cardAppear 0.6s cubic-bezier(0.2, 0.8, 0.4, 1) 0.15s forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.animate-card-3 {
+  animation: cardAppear 0.6s cubic-bezier(0.2, 0.8, 0.4, 1) 0.3s forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
