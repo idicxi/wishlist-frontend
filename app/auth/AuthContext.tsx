@@ -101,8 +101,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Ошибка регистрации');
+      const error = await response.json().catch(() => ({}));
+        const msg = Array.isArray(error.detail)
+          ? error.detail.map((e: { msg?: string }) => e?.msg).filter(Boolean).join(', ') || 'Ошибка входа'
+          : (error.detail ?? 'Неверный email или пароль');
+        throw new Error(typeof msg === 'string' ? msg : 'Ошибка входа');
       }
 
       const data = await response.json();
