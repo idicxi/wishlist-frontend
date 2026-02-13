@@ -2,21 +2,29 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+// Базовый URL: отдельная переменная для WS или тот же хост, что и API
 const RAW_WS_BASE_URL =
-  process.env.NEXT_PUBLIC_WS_URL ?? 'ws://localhost:8000/ws/wishlists';
+  process.env.NEXT_PUBLIC_WS_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  'http://localhost:8000';
 
 function normalizeWsBaseUrl(raw: string): string {
   const trimmed = raw.replace(/\/$/, '');
+  let out: string;
   if (trimmed.startsWith('ws://') || trimmed.startsWith('wss://')) {
-    return trimmed;
+    out = trimmed;
+  } else if (trimmed.startsWith('http://')) {
+    out = `ws://${trimmed.slice('http://'.length)}`;
+  } else if (trimmed.startsWith('https://')) {
+    out = `wss://${trimmed.slice('https://'.length)}`;
+  } else {
+    out = trimmed;
   }
-  if (trimmed.startsWith('http://')) {
-    return `ws://${trimmed.slice('http://'.length)}`;
+  // Бэкенд ожидает путь /ws/wishlists/{wishlist_id} — если в URL только хост, добавляем путь
+  if (!out.includes('/ws/wishlists')) {
+    out = out.replace(/\/?$/, '') + '/ws/wishlists';
   }
-  if (trimmed.startsWith('https://')) {
-    return `wss://${trimmed.slice('https://'.length)}`;
-  }
-  return trimmed;
+  return out;
 }
 
 const WS_BASE_URL = normalizeWsBaseUrl(RAW_WS_BASE_URL);
