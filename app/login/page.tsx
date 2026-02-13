@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../auth/AuthContext';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,28 +31,11 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Неверный email или пароль');
-      }
-
-      const data = await res.json();
-      if (!data?.access_token || !data?.user) {
-        throw new Error('Некорректный ответ сервера при входе');
-      }
-
-      login(data.user, data.access_token);
+    await login(email, password);
       router.push('/dashboard');
     } catch (e) {
       const message =
-        e instanceof Error ? e.message : 'Ошибка при входе, попробуйте ещё раз';
+      e instanceof Error ? e.message : 'Неверный email или пароль';
       setError(message);
     } finally {
       setLoading(false);
