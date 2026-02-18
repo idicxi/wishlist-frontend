@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wishlist (фронтенд)
 
-## Getting Started
+Клиент приложения «Социальный вишлист»: вишлисты, подарки, бронирование, скидывание, реалтайм по WebSocket.
 
-First, run the development server:
+## Стек
+
+- Next.js (App Router), React, TypeScript
+- JWT-авторизация + опционально вход через Google (OAuth)
+
+## Установка и запуск
 
 ```bash
+npm install
+cp .env.example .env
+# Задайте NEXT_PUBLIC_API_URL (бэкенд) и при необходимости NEXT_PUBLIC_GOOGLE_CLIENT_ID
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Переменные окружения
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Переменная | Описание |
+|------------|----------|
+| `NEXT_PUBLIC_API_URL` | URL бэкенда (например `http://localhost:8000`). На деплое — ваш API (автозаполнение по URL и запросы идут сюда). |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Client ID из Google Cloud Console для кнопки «Войти через Google». Если не задан — кнопка не показывается. |
 
-## Learn More
+Для Google OAuth в консоли укажите **Authorized redirect URI**:  
+`https://<ваш-домен>/auth/callback` (прод) и `http://localhost:3000/auth/callback` (разработка).
 
-To learn more about Next.js, take a look at the following resources:
+## Сборка и деплой
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+На Vercel и др. задайте `NEXT_PUBLIC_API_URL` и при необходимости `NEXT_PUBLIC_GOOGLE_CLIENT_ID` в настройках окружения.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Автозаполнение по URL на деплое использует `NEXT_PUBLIC_API_URL`: фронт дергает бэкенд `GET /api/parse-url?url=...`, поэтому на проде должен быть доступен ваш задеплоенный API.

@@ -120,14 +120,11 @@ export default function DashboardPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(
-          `${API_BASE_URL}/wishlists/?user_id=${encodeURIComponent(String(user.id))}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const res = await fetch(`${API_BASE_URL}/wishlists/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         if (!res.ok) {
           throw new Error('Не удалось загрузить вишлисты');

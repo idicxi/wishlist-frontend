@@ -28,7 +28,7 @@ interface Gift {
   } | null;
 }
 
-async function getWishlistData(slug: string) {
+async function getWishlistData(slug: string, token: string | undefined) {
   const wishlistRes = await fetch(
     `${API_BASE_URL}/wishlist/${encodeURIComponent(slug)}`,
     { next: { revalidate: 0 } },
@@ -46,7 +46,10 @@ async function getWishlistData(slug: string) {
 
   const giftsRes = await fetch(
     `${API_BASE_URL}/wishlists/${wishlist.id}/gifts`,
-    { next: { revalidate: 0 } },
+    {
+      next: { revalidate: 0 },
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    },
   );
 
   const gifts = giftsRes.ok ? await giftsRes.json() : [];
@@ -129,8 +132,10 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { wishlist, gifts } = await getWishlistData(slug);
+  const cookieStore = await cookies();
+  const token = cookieStore.get('wishlist_token')?.value;
   const currentUser = await getCurrentUser();
+  const { wishlist, gifts } = await getWishlistData(slug, token);
 
   if (!wishlist) {
     return <WishlistNotFound />;

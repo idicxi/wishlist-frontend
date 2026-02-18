@@ -14,8 +14,10 @@ export async function POST(req: NextRequest) {
       fullUrl = 'https://' + fullUrl;
     }
 
-    // ПАРСИМ ЧЕРЕЗ СВОЙ БЭКЕНД (FastAPI)
-    const response = await fetch(`http://localhost:8000/api/parse-url?url=${encodeURIComponent(fullUrl)}`);
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const response = await fetch(
+      `${apiBase.replace(/\/$/, '')}/api/parse-url?url=${encodeURIComponent(fullUrl)}`
+    );
     
     if (!response.ok) {
       throw new Error('Failed to parse');

@@ -235,28 +235,20 @@ export function WishlistClient({
     try {
       const token = localStorage.getItem('wishlist_token');
       
-      const url = new URL(`${API_BASE_URL}/gifts/${giftId}/reserve`);
-      url.searchParams.append('user_id', String(user?.id));
-      
-      console.log('🔍 Отправка запроса на бронирование:', url.toString());
-      
-      const response = await fetch(url.toString(), {
+      const response = await fetch(`${API_BASE_URL}/gifts/${giftId}/reserve`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       const data = await response.json();
-      console.log('📦 Ответ от сервера:', data);
-  
+
       if (!response.ok) {
         alert(`❌ ${data.error || 'Не удалось забронировать подарок'}`);
         return;
       }
-      
-      console.log('✅ Подарок забронирован');
       
     } catch (e) {
       console.error('❌ Ошибка соединения:', e);
@@ -309,9 +301,8 @@ export function WishlistClient({
       const token = localStorage.getItem('wishlist_token');
       
       const url = new URL(`${API_BASE_URL}/gifts/${selectedGift.id}/contribute`);
-      url.searchParams.append('user_id', String(user?.id));
-      url.searchParams.append('amount', String(amount));
-      
+      url.searchParams.set('amount', String(amount));
+
       const response = await fetch(url.toString(), {
         method: 'POST',
         headers: {

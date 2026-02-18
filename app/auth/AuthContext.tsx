@@ -23,6 +23,7 @@ interface AuthContextValue {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithToken: (user: User, access_token: string) => void;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
 }
@@ -90,6 +91,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const loginWithToken = useCallback((user: User, access_token: string) => {
+    setUser(user);
+    setToken(access_token);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('wishlist_token', access_token);
+      window.localStorage.setItem('wishlist_user', JSON.stringify(user));
+      document.cookie = `wishlist_token=${access_token}; path=/; max-age=604800; SameSite=Lax`;
+    }
+  }, []);
+
   // ✅ РЕГИСТРАЦИЯ
   const register = useCallback(async (email: string, password: string, name: string) => {
     setLoading(true);
@@ -148,6 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         token,
         loading,
         login,
+        loginWithToken,
         register,
         logout,
       }}
