@@ -68,6 +68,7 @@ export function WishlistClient({
   const [imageUrl, setImageUrl] = useState('');
   const [addError, setAddError] = useState<string | null>(null);
   const [savingGift, setSavingGift] = useState(false);
+  const [parsingAdd, setParsingAdd] = useState(false);
 
   const [editOpen, setEditOpen] = useState(false);
   const [editingGift, setEditingGift] = useState<Gift | null>(null);
@@ -171,6 +172,68 @@ export function WishlistClient({
     } catch (e) {
       console.error(e);
       alert('Не удалось удалить подарок');
+    }
+  };
+
+  const handleParseFromUrl = async (mode: 'add' | 'edit') => {
+    const rawUrl = mode === 'add' ? link : editLink;
+    const trimmed = rawUrl.trim();
+    if (!trimmed) return;
+
+    try {
+      if (mode === 'add') {
+        setParsingAdd(true);
+        setAddError(null);
+      } else {
+        setParsingEdit(true);
+        setEditError(null);
+      }
+
+      const res = await fetch('/api/og-scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: trimmed }),
+      });
+
+      if (!res.ok) {
+        throw new Error('parse failed');
+      }
+
+      const data: { title: string | null; image: string | null; price: number | null } = await res.json();
+
+      if (mode === 'add') {
+        if (!title.trim() && data.title) {
+          setTitle(data.title);
+        }
+        if (!price && data.price != null) {
+          setPrice(String(data.price));
+        }
+        if (!imageUrl && data.image) {
+          setImageUrl(data.image);
+        }
+      } else {
+        if (!editTitle.trim() && data.title) {
+          setEditTitle(data.title);
+        }
+        if (!editPrice && data.price != null) {
+          setEditPrice(String(data.price));
+        }
+        if (!editImageUrl && data.image) {
+          setEditImageUrl(data.image);
+        }
+      }
+    } catch (e) {
+      if (mode === 'add') {
+        setAddError('Не удалось распарсить ссылку');
+      } else {
+        setEditError('Не удалось распарсить ссылку');
+      }
+    } finally {
+      if (mode === 'add') {
+        setParsingAdd(false);
+      } else {
+        setParsingEdit(false);
+      }
     }
   };
 
@@ -431,6 +494,16 @@ export function WishlistClient({
                     className="mt-1.5 h-12 w-full rounded-xl border border-gray-200 bg-white/90 px-4 py-3 text-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-100/50"
                     placeholder="https://..."
                   />
+                  <div className="mt-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => handleParseFromUrl('add')}
+                      disabled={parsingAdd || !link.trim()}
+                      className="text-[11px] font-medium text-pink-600 hover:text-pink-700 disabled:opacity-40"
+                    >
+                      {parsingAdd ? 'Парсим...' : 'Заполнить по ссылке'}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-700">
@@ -566,6 +639,16 @@ export function WishlistClient({
                     className="mt-1.5 h-12 w-full rounded-xl border border-gray-200 bg-white/90 px-4 py-3 text-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-100/50"
                     placeholder="https://..."
                   />
+                  <div className="mt-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => handleParseFromUrl('edit')}
+                      disabled={parsingEdit || !editLink.trim()}
+                      className="text-[11px] font-medium text-pink-600 hover:text-pink-700 disabled:opacity-40"
+                    >
+                      {parsingEdit ? 'Парсим...' : 'Заполнить по ссылке'}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-700">

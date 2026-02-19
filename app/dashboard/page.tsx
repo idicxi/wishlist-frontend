@@ -76,6 +76,7 @@ export default function DashboardPage() {
 
   const [expandedWishlists, setExpandedWishlists] = useState<Set<number>>(new Set());
   const [editingWishlist, setEditingWishlist] = useState<Wishlist | null>(null);
+  const [parsingGiftId, setParsingGiftId] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -212,6 +213,43 @@ export default function DashboardPage() {
     setEditingWishlist(null);
     setDraftGifts([]);
     setCurrentWishlistId(null);
+  };
+
+  const parseDraftGiftUrl = async (draftId: number, link: string) => {
+    const trimmed = link.trim();
+    if (!trimmed) return;
+
+    try {
+      setParsingGiftId(draftId);
+
+      const res = await fetch('/api/og-scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: trimmed }),
+      });
+
+      if (!res.ok) {
+        throw new Error('parse failed');
+      }
+
+      const data: { title: string | null; image: string | null; price: number | null } = await res.json();
+
+      setDraftGifts((prev) =>
+        prev.map((g) => {
+          if (g.id !== draftId) return g;
+          return {
+            ...g,
+            title: g.title || (data.title ?? ''),
+            price: g.price || (data.price != null ? String(data.price) : g.price),
+            imageUrl: g.imageUrl || (data.image ?? g.imageUrl),
+          };
+        }),
+      );
+    } catch (e) {
+      alert('Не удалось распарсить ссылку');
+    } finally {
+      setParsingGiftId(null);
+    }
   };
 
   const handleDeleteGift = async (giftId: number) => {
@@ -876,6 +914,26 @@ export default function DashboardPage() {
                                       className="h-10 w-full rounded-xl border border-gray-200 bg-white/90 px-4 text-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-100/50"
                                       placeholder="Ссылка на товар"
                                     />
+                                    {editingGift && (
+                                      <div className="mt-1 flex justify-end">
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            if (!editingGift.link.trim()) return;
+                                            parseDraftGiftUrl(editingGift.id, editingGift.link);
+                                          }}
+                                          disabled={
+                                            !editingGift.link.trim() ||
+                                            parsingGiftId === editingGift.id
+                                          }
+                                          className="text-[10px] font-medium text-pink-600 hover:text-pink-700 disabled:opacity-40"
+                                        >
+                                          {parsingGiftId === editingGift.id
+                                            ? 'Парсим...'
+                                            : 'Заполнить по ссылке'}
+                                        </button>
+                                      </div>
+                                    )}
                                     <div className="flex gap-3">
                                       <input
                                         type="number"
@@ -1149,6 +1207,24 @@ export default function DashboardPage() {
                                       className="h-11 w-full rounded-xl border border-gray-200 bg-white/90 px-4 py-2.5 text-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-100/50"
                                       placeholder="https://..."
                                     />
+                                    <div className="mt-1 flex justify-end">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (!gift.link.trim()) return;
+                                          parseDraftGiftUrl(gift.id, gift.link);
+                                        }}
+                                        disabled={
+                                          !gift.link.trim() ||
+                                          parsingGiftId === gift.id
+                                        }
+                                        className="text-[10px] font-medium text-pink-600 hover:text-pink-700 disabled:opacity-40"
+                                      >
+                                        {parsingGiftId === gift.id
+                                          ? 'Парсим...'
+                                          : 'Заполнить по ссылке'}
+                                      </button>
+                                    </div>
                                   </div>
                                   
                                   <div className="flex gap-3">
