@@ -109,7 +109,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const { slug } = await params;
-    const { wishlist } = await getWishlistData(slug);
+  const cookieStore = await cookies();
+const token = cookieStore.get('wishlist_token')?.value;
+const { wishlist } = await getWishlistData(slug, token);
     if (!wishlist) {
       return {
         title: 'Вишлист не найден',
