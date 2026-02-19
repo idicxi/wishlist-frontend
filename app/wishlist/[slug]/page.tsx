@@ -1,3 +1,4 @@
+'use client'
 import type { Metadata } from 'next';
 import { WishlistClientWrapper } from './WishlistClientWrapper';
 import { cookies } from 'next/headers';
