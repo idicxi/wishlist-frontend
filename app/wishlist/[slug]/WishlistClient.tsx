@@ -78,6 +78,7 @@ export function WishlistClient({
   const [editImageUrl, setEditImageUrl] = useState('');
   const [editError, setEditError] = useState<string | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [parsingEdit, setParsingEdit] = useState(false);
 
   // Состояния для модалки складчины
   const [contributeOpen, setContributeOpen] = useState(false);
