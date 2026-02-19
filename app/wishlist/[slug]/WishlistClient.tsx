@@ -493,42 +493,45 @@ export function WishlistClient({
                 <button
                   type="button"
                   disabled={savingGift || !title.trim() || !price}
-                  onClick={async () => {
-                    if (!title.trim() || !price) {
-                      setAddError('Введите название и цену');
-                      return;
-                    }
-                    setSavingGift(true);
-                    setAddError(null);
-                    try {
-                      const parsedPrice = Number(price);
-                      if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
-                        setAddError('Некорректная цена');
-                        setSavingGift(false);
-                        return;
-                      }
-                      const apiUrl = new URL(`${API_BASE_URL}/gifts/`);
-                      apiUrl.searchParams.set('title', title.trim());
-                      apiUrl.searchParams.set('price', String(parsedPrice));
-                      apiUrl.searchParams.set('wishlist_id', String(wishlistId));
-                      if (link) apiUrl.searchParams.set('url', link);
-                      if (imageUrl) apiUrl.searchParams.set('image_url', imageUrl);
-                      const res = await fetch(apiUrl.toString(), {
-                        method: 'POST',
-                      });
-                      if (!res.ok) throw new Error('Не удалось сохранить подарок');
-                      await res.json();
-                      setAddOpen(false);
-                      setTitle('');
-                      setLink('');
-                      setPrice('');
-                      setImageUrl('');
-                    } catch (e) {
-                      setAddError('Ошибка при сохранении подарка');
-                    } finally {
-                      setSavingGift(false);
-                    }
-                  }}
+                onClick={async () => {
+  if (!title.trim() || !price) {
+    setAddError('Введите название и цену');
+    return;
+  }
+  setSavingGift(true);
+  setAddError(null);
+  try {
+    const parsedPrice = Number(price);
+    if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+      setAddError('Некорректная цена');
+      setSavingGift(false);
+      return;
+    }
+    const apiUrl = new URL(`${API_BASE_URL}/gifts/`);
+    apiUrl.searchParams.set('title', title.trim());
+    apiUrl.searchParams.set('price', String(parsedPrice));
+    apiUrl.searchParams.set('wishlist_id', String(wishlistId));
+    if (link) apiUrl.searchParams.set('url', link);
+    if (imageUrl) apiUrl.searchParams.set('image_url', imageUrl);
+
+    const token = localStorage.getItem('wishlist_token');
+    const res = await fetch(apiUrl.toString(), {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error('Не удалось сохранить подарок');
+    await res.json();
+    setAddOpen(false);
+    setTitle('');
+    setLink('');
+    setPrice('');
+    setImageUrl('');
+  } catch (e) {
+    setAddError('Ошибка при сохранении подарка');
+  } finally {
+    setSavingGift(false);
+  }
+}}
                   className="group relative overflow-hidden rounded-full bg-gray-900/95 px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:bg-gray-900 hover:shadow-pink-200/50 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   <span className="relative z-10">
