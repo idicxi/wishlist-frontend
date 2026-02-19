@@ -2,11 +2,12 @@
 
 import { useAuth } from '../../auth/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function AuthCallbackPage() {
+// Выносим логику в отдельный внутренний компонент, который использует useSearchParams
+function AuthCallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { loginWithToken } = useAuth();
@@ -71,5 +72,21 @@ export default function AuthCallbackPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-white via-pink-50/30 to-white pt-14">
       <p className="text-gray-600">Вход через Google...</p>
     </div>
+  );
+}
+
+// Основной экспортируемый компонент оборачивает AuthCallbackHandler в Suspense
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-white via-pink-50/30 to-white pt-14">
+        <div className="text-center">
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-pink-200 border-t-pink-500 mx-auto" />
+          <p className="text-gray-600">Загрузка...</p>
+        </div>
+      </div>
+    }>
+      <AuthCallbackHandler />
+    </Suspense>
   );
 }
